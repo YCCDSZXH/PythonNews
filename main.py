@@ -79,14 +79,14 @@ PrintList(result)
 print(len(result))
 
 # 导入python中的内置模块csv
-with open("contentPro.csv", "w") as f:
+with open("content2.csv", "w") as f:
     w = csv.writer(f)
     w.writerows(result)
 
 # 读取数据
 pd.set_option("display.unicode.ambiguous_as_wide", True)
 pd.set_option("display.unicode.east_asian_width", True)
-df = pd.read_csv("content.csv", names=["path", "title", "date"])
+df = pd.read_csv("content2.csv", names=["path", "title", "date"])
 print(df.head())
 
 # 根据日期进行分组并取数量最多的前10天
@@ -112,3 +112,25 @@ plt.xlabel("日期",fontsize=14)
 # 设置x轴名称
 plt.ylabel("数量",fontsize=14)
 plt.show()
+
+# 拓展部分
+titleList = ["macro/more/","xwzx/fazhi/","xwzx/shgj/gdxw/","xwzx/kj/"]
+result = []
+for item in titleList:
+    response = requests.get(f'http://www.ce.cn/{item}index.shtml')
+    response.encoding = "gb2312"
+    html = response.text
+    pattern = '&middot;<a\shref="(.+?)">([\d\D]+?)</a>.+?f2">(.+?)\s'
+    result += re.findall(pattern, html)
+    # PrintList(result)
+    for i in range(1, 25):
+        response = requests.get(f'http://www.ce.cn/{item}index_{i}.shtml')
+        response.encoding = "gb2312"
+        html = response.text
+        pattern = '&middot;<a\shref="(.+?)">([\d\D]+?)</a>.+?f2">(.+?)\s'
+        result += re.findall(pattern, html)
+
+# 导入python中的内置模块csv
+with open("content3.csv", "w") as f:
+    w = csv.writer(f)
+    w.writerows(result)
